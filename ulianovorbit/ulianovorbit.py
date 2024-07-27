@@ -61,6 +61,75 @@ class UlianovOrbit:
     """
     def __init__(self):
         self.version = "V1.0 - 22/07/2024"
+        self.G = 6.674184e-11
+    
+    def calc_velocity(self,Ue, R0, de, V0):
+        V=V0 * np.sqrt(1 + (2 / Ue) * (R0 / de - 1))
+        return V
+    
+    def calc_v0(self,Ue, R0,M):
+        V0=np.sqrt(Ue *ou.G * M/R0)
+        return V0
+     
+    def calc_Ue(self,R0,V0,M):
+        Ue = V0**2/(ou.G *M/R0)
+        return Ue
+       
+    def calc_mass_ab_v0(self,a,b,V0):
+        R0,Ue = eu.calc_Ue(a, b)
+        M = V0**2*R0/Ue/ou.G
+        return M
+    
+    def calc_mass_r0v0_ue(self,R0,V0,Ue):
+        M = V0**2*R0/Ue/ou.G
+        return M
+    
+    
+    
+    def obitlength_ab(self,a,b):
+        h = (a - b)**2 / (a + b)**2
+        Le =  2*np.pi()*(a + b) * (1 + (3 * h / (10 + np.sqrt(4 - 3 * h))))/2
+        return Le
+
+    def obittime_ab_v0(self,a,b,V0):
+        orbittime = 2*np.pi / V0 * b /(np.sqrt(2 *( 1 - np.sqrt(1 - b**2/a**2))-( b**2/a**2)))
+        return  orbittime
+   
+    def obittime_ab_m(self,a,M):
+        orbittime = 2*np.pi*np.sqrt(a**3/(self.G*M))  
+        return  orbittime
+   
+    def obittime_r0v0_m(self,R0,V0,M):
+        Ue = V0**2*R0/(self.G*M)
+        if Ue<2:
+            a,b=eu.calc_ab(R0,Ue)
+            orbittime = 2*np.pi*np.sqrt(a**3/(self.G*M)) 
+        else:
+            orbittime = 100*R0/V0     
+        return  orbittime
+    
+   
+   
+    def obittime_ue_v0(self,Ue,R0,V0):
+        if Ue<2:
+            a,b=eu.calc_ab(Ue, R0)
+            orbittime=self.obittime_ab_v0(a,b,V0)
+        else:
+            orbittime = 100*R0 / V0  
+        return  orbittime
+    
+
+
+    def obitlength_ue(self,Ue,R0):
+        if Ue<2:
+            a,b=eu.calc_ab(Ue, R0)
+            Le=self.obitlength_ab(a,b)
+        else:
+            Le=1000*R0    
+        return Le
+
+    
+
 
     def calc_time(self, param, alpha_dg, delta_angle_dg=0.01, case_3d=False):
         """
@@ -350,10 +419,10 @@ class UlianovOrbit:
         tuple: (R0, Ue, V0) Ulianov parameters.
         """
         # Calculate b using the eccentricity formula
-        G = 6.67384e-11
+       
         b = a * np.sqrt(1 - e**2)
         R0, Ue = eu.calc_Ue(a, b)
-        V0 = np.sqrt(Ue * G * M / R0)
+        V0 = np.sqrt(Ue * self.G * M / R0)
         return R0, Ue, V0
 
     def kepler_to_ulianov_6p(self, a, e, ang_i_dg, ang_omega_dg, ang_ell_dg, alpha_dg, t0, v, M):
@@ -375,10 +444,9 @@ class UlianovOrbit:
         uom_params: Object containing the calculated Ulianov parameters.
         """
         # Calculate b using the eccentricity formula
-        G = 6.67384e-11
         b = a * np.sqrt(1 - e**2)
         R0, Ue = eu.calc_Ue(a, b)
-        V0 = np.sqrt(Ue * G * M / R0)
+        V0 = np.sqrt(Ue * self.G * M / R0)
         ang_i = ang_i_dg * np.pi / 180
         ang_omega = ang_omega_dg * np.pi / 180
         ang_ell = ang_ell_dg * np.pi / 180
@@ -483,5 +551,5 @@ class UlianovOrbit:
         """
         # Placeholder for actual implementation
         return uom_params()
-
-ou= uom_params()
+    
+ou = UlianovOrbit()
