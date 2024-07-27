@@ -63,71 +63,183 @@ class UlianovOrbit:
         self.version = "V1.0 - 22/07/2024"
         self.G = 6.674184e-11
     
-    def calc_velocity(self,Ue, R0, de, V0):
-        V=V0 * np.sqrt(1 + (2 / Ue) * (R0 / de - 1))
+    def calc_velocity(self, Ue, R0, V0,d):
+        """
+        Calculate the orbital velocity at a given distance d from the central body.
+    
+        Parameters:
+        Ue (float): Ulianov Ellipse Parameter.
+        R0 (float): Minimum orbital distance.
+        d (float): Distance from the central body at which to calculate the velocity.
+        V0 (float): Maximum orbital velocity.
+    
+        Returns:
+        float: The orbital velocity at the distance d.
+        """
+        V = V0 * np.sqrt(1 + (2 / Ue) * (R0 / d - 1))
         return V
     
-    def calc_v0(self,Ue, R0,M):
-        V0=np.sqrt(Ue *ou.G * M/R0)
+    def calc_v0(self, Ue, R0, M):
+        """
+        Calculate the maximum orbital velocity V0 given the Ulianov parameters and the mass of the central body.
+    
+        Parameters:
+        Ue (float): Ulianov Ellipse Parameter.
+        R0 (float): Minimum orbital distance.
+        M (float): Mass of the central body.
+    
+        Returns:
+        float: The maximum orbital velocity V0.
+        """
+        V0 = np.sqrt(Ue * self.G * M / R0)
         return V0
-     
-    def calc_Ue(self,R0,V0,M):
-        Ue = V0**2/(ou.G *M/R0)
+    
+    def calc_Ue(self, R0, V0, M):
+        """
+        Calculate the Ulianov Ellipse Parameter Ue from the given parameters.
+    
+        Parameters:
+        R0 (float): Minimum orbital distance.
+        V0 (float): Maximum orbital velocity.
+        M (float): Mass of the central body.
+    
+        Returns:
+        float: The Ulianov Ellipse Parameter Ue.
+        """
+        Ue = V0**2 / (self.G * M / R0)
         return Ue
-       
-    def calc_mass_ab_v0(self,a,b,V0):
-        R0,Ue = eu.calc_Ue(a, b)
-        M = V0**2*R0/Ue/ou.G
+    
+    def calc_mass_ab_v0(self, a, b, V0):
+        """
+        Calculate the mass of the central body using the semi-major axis, semi-minor axis, and maximum orbital velocity.
+    
+        Parameters:
+        a (float): Semi-major axis.
+        b (float): Semi-minor axis.
+        V0 (float): Maximum orbital velocity.
+    
+        Returns:
+        float: The mass of the central body.
+        """
+        R0, Ue = eu.calc_Ue(a, b)
+        M = V0**2 * R0 / Ue / self.G
         return M
     
-    def calc_mass_r0v0_ue(self,R0,V0,Ue):
-        M = V0**2*R0/Ue/ou.G
+    def calc_mass_r0v0_ue(self, R0, V0, Ue):
+        """
+        Calculate the mass of the central body using R0, V0, and Ue.
+    
+        Parameters:
+        R0 (float): Minimum orbital distance.
+        V0 (float): Maximum orbital velocity.
+        Ue (float): Ulianov Ellipse Parameter.
+    
+        Returns:
+        float: The mass of the central body.
+        """
+        M = V0**2 * R0 / Ue / self.G
         return M
     
+    def calc_orbit_length_ab(self, a, b):
+        """
+        Calculate the length of the orbit given the semi-major axis and semi-minor axis.
     
+        Parameters:
+        a (float): Semi-major axis.
+        b (float): Semi-minor axis.
     
-    def obitlength_ab(self,a,b):
+        Returns:
+        float: The length of the orbit.
+        """
         h = (a - b)**2 / (a + b)**2
-        Le =  2*np.pi()*(a + b) * (1 + (3 * h / (10 + np.sqrt(4 - 3 * h))))/2
+        Le = 2 * np.pi * (a + b) * (1 + (3 * h / (10 + np.sqrt(4 - 3 * h)))) / 2
         return Le
-
-    def obittime_ab_v0(self,a,b,V0):
-        orbittime = 2*np.pi / V0 * b /(np.sqrt(2 *( 1 - np.sqrt(1 - b**2/a**2))-( b**2/a**2)))
-        return  orbittime
-   
-    def obittime_ab_m(self,a,M):
-        orbittime = 2*np.pi*np.sqrt(a**3/(self.G*M))  
-        return  orbittime
-   
-    def obittime_r0v0_m(self,R0,V0,M):
-        Ue = V0**2*R0/(self.G*M)
-        if Ue<2:
-            a,b=eu.calc_ab(R0,Ue)
-            orbittime = 2*np.pi*np.sqrt(a**3/(self.G*M)) 
-        else:
-            orbittime = 100*R0/V0     
-        return  orbittime
     
-   
-   
-    def obittime_ue_v0(self,Ue,R0,V0):
-        if Ue<2:
-            a,b=eu.calc_ab(Ue, R0)
-            orbittime=self.obittime_ab_v0(a,b,V0)
-        else:
-            orbittime = 100*R0 / V0  
-        return  orbittime
+    def calc_orbit_time_ab_v0(self, a, b, V0):
+        """
+        Calculate the orbital period using the semi-major axis, semi-minor axis, and maximum orbital velocity.
     
-
-
-    def obitlength_ue(self,Ue,R0):
-        if Ue<2:
-            a,b=eu.calc_ab(Ue, R0)
-            Le=self.obitlength_ab(a,b)
+        Parameters:
+        a (float): Semi-major axis.
+        b (float): Semi-minor axis.
+        V0 (float): Maximum orbital velocity.
+    
+        Returns:
+        float: The orbital period.
+        """
+        orbittime = 2 * np.pi / V0 * b / (np.sqrt(2 * (1 - np.sqrt(1 - b**2 / a**2)) - (b**2 / a**2)))
+        return orbittime
+    
+    def calc_orbit_time_ab_m(self, a, M):
+        """
+        Calculate the orbital period using the semi-major axis and the mass of the central body.
+    
+        Parameters:
+        a (float): Semi-major axis.
+        M (float): Mass of the central body.
+    
+        Returns:
+        float: The orbital period.
+        """
+        orbittime = 2 * np.pi * np.sqrt(a**3 / (self.G * M))
+        return orbittime
+    
+    def calc_orbit_time_r0v0_m(self, R0, V0, M):
+        """
+        Calculate the orbital period using R0, V0, and the mass of the central body.
+    
+        Parameters:
+        R0 (float): Minimum orbital distance.
+        V0 (float): Maximum orbital velocity.
+        M (float): Mass of the central body.
+    
+        Returns:
+        float: The orbital period.
+        """
+        Ue = V0**2 * R0 / (self.G * M)
+        if Ue < 2:
+            a, b = eu.calc_ab(R0, Ue)
+            orbittime = 2 * np.pi * np.sqrt(a**3 / (self.G * M))
         else:
-            Le=1000*R0    
+            orbittime = 100 * R0 / V0
+        return orbittime
+    
+    def calc_orbit_time_ue_v0(self, Ue, R0, V0):
+        """
+        Calculate the orbital period using Ue, R0, and V0.
+    
+        Parameters:
+        Ue (float): Ulianov Ellipse Parameter.
+        R0 (float): Minimum orbital distance.
+        V0 (float): Maximum orbital velocity.
+    
+        Returns:
+        float: The orbital period.
+        """
+        if Ue < 2:
+            a, b = eu.calc_ab(Ue, R0)
+            orbittime = self.calc_orbit_time_ab_v0(a, b, V0)
+        else:
+            orbittime = 100 * R0 / V0
+        return orbittime
+    
+    def calc_orbit_length_ue(self, Ue, R0):
+        """
+        Calculate the length of the orbit using Ue and R0.
+    
+        Parameters:
+        Ue (float): Ulianov Ellipse Parameter.
+        R0 (float): Minimum orbital distance.
+    
+        Returns:
+        float: The length of the orbit.
+        """
+        if Ue < 2:
+            a, b = eu.calc_ab(Ue, R0)
+            Le = self.calc_orbit_length_ab(a, b)
+        else:
+            Le = 1000 * R0
         return Le
-
     
 
 

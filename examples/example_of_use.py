@@ -28,9 +28,9 @@ print(f" M1(R0,V0,Ue)= {Mue:.4E}")
 
 
 TKepler = 2*np.pi*np.sqrt(a**3/(ou.G*M1))
-Torb1 = ou.obittime_ab_m(a,M1)
-Torb2 = ou.obittime_ab_v0(a,b,V0)
-Torb3 = ou.obittime_r0v0_m(R0,V0,M1)
+Torb1 = ou.calc_orbit_time_ab_m(a,M1)
+Torb2 = ou.calc_orbit_time_ab_v0(a,b,V0)
+Torb3 = ou.calc_orbit_time_r0v0_m(R0,V0,M1)
 
 print(f"Orbital time test")
 print(f"T Kepler       ={TKepler} s  ") 
