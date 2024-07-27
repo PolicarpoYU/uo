@@ -94,7 +94,7 @@ class UlianovOrbit:
         V0 = np.sqrt(Ue * self.G * M / R0)
         return V0
     
-    def calc_Ue(self, R0, V0, M):
+    def calc_ue(self, R0, V0, M):
         """
         Calculate the Ulianov Ellipse Parameter Ue from the given parameters.
     
@@ -121,7 +121,7 @@ class UlianovOrbit:
         Returns:
         float: The mass of the central body.
         """
-        R0, Ue = eu.calc_Ue(a, b)
+        R0, Ue = eu.calc_ue(a, b)
         M = V0**2 * R0 / Ue / self.G
         return M
     
@@ -533,7 +533,7 @@ class UlianovOrbit:
         # Calculate b using the eccentricity formula
        
         b = a * np.sqrt(1 - e**2)
-        R0, Ue = eu.calc_Ue(a, b)
+        R0, Ue = eu.calc_ue(a, b)
         V0 = np.sqrt(Ue * self.G * M / R0)
         return R0, Ue, V0
 
@@ -557,7 +557,7 @@ class UlianovOrbit:
         """
         # Calculate b using the eccentricity formula
         b = a * np.sqrt(1 - e**2)
-        R0, Ue = eu.calc_Ue(a, b)
+        R0, Ue = eu.calc_ue(a, b)
         V0 = np.sqrt(Ue * self.G * M / R0)
         ang_i = ang_i_dg * np.pi / 180
         ang_omega = ang_omega_dg * np.pi / 180

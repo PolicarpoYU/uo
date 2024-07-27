@@ -7,5 +7,5 @@ from .ulianovorbit import ou
 from .ulianovorbit import uom_params, orbit_vect
 
 # Define the version of the ulianovellipse package.
-__version__ = '1.3.0'
+__version__ = '1.4.0'
 

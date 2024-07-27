@@ -10,7 +10,7 @@ M2 = 1.0e4  # Massa da pedra em kg
 
 R0 = 1e8
 V0 = 2500
-Ue = ou.calc_Ue(R0,V0,M1)
+Ue = ou.calc_ue(R0,V0,M1)
 a,b=eu.calc_ab(R0,Ue)
 print(f"Conversion test 1 V0 ={V0:.2f}: \na={a:.2f},b={b:.2f}, Ue={Ue:.4f}, R0={R0:.2f}")
 
