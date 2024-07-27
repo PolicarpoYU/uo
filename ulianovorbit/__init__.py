@@ -1,5 +1,5 @@
 # ulianovellipse/__init__.py
 
-from .ulianoveorbit import ou
+from .ulianovorbit import ou
 
-__version__ = '1.1.0'
+__version__ = '1.2.0'
